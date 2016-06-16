@@ -11,8 +11,16 @@ class Conference(models.Model):
 	
 
 class Team(models.Model):
-	name = models.CharField(max_length=255)
-	conference = models.ForeignKey(Conference, on_delete= models.CASCADE,null= True)
+	GENDERS = (
+		("M", "Men"),
+		("W", "Women")
+	)
+	
+	name = models.CharField(max_length=255)											#not sure if this should make Meet.gender redundant
+	conference = models.ForeignKey(Conference, on_delete= models.SET_DEFAULT,default= "")
+
+	gender = models.CharField(choices=GENDERS, max_length=1, default="")			#should not be default = "" but it wants a default since rows already exist
+
 	#possibly something about facilities
 
 class Event(models.Model):
@@ -31,32 +39,39 @@ class Event(models.Model):
 		("SCM", "Short Course Meters"),
 		("LCM", "Long Course Meters")
 	)
+	TYPES = (
+		("Prelim","Preliminary"),
+		("Semi", "Semi-Final"),
+		("Final", "Final"),
+		("Swim-Off","Swim-Off"),
+		("Time trial","Time trial")
+	)
 	#needs logic for distances and events to make sure there's no 1650LCM Fly
 	event = models.CharField(choices=EVENTS,max_length=10)
 	#distance = models.IntegerField(choices=DISTANCES)
 	course = models.CharField(choices=COURSES, max_length=3)
-	
+	event_type= models.CharField(choices= TYPES, max_length=11, default="Final") 	#setting default to Final ( as in Timed Final )
 	
 
 class Swimmer(models.Model):
 	name = models.CharField(max_length=255)
-	dateofbirth = models.DateField(blank=True,null=True)
+	date_of_birth = models.DateField(blank=True,default= "")
 	teams = models.ManyToManyField(Team)
-	gradYear = models.DateField() 													#only using year here
-	city = models.CharField(blank=True, null=True,max_length=255)
-	state =models.CharField(blank=True, null=True, max_length=2)
-	country = models.CharField(blank=True, null=True, max_length=255) 				#should be a choices= ...
-	zipcode= models.CharField(max_length=5,blank=True,null=True)
-	homePhone= models.CharField(blank=True, null=True,max_length=10)
-	facebook= models.CharField(blank=True,null=True, max_length=255)
-	twitter	= models.CharField(blank=True,null=True, max_length=255)
+	grad_year = models.DateField() 													#only using year here
+	city = models.CharField(blank=True, default ="",max_length=255)
+	state =models.CharField(blank=True, default="", max_length=2)
+	country = models.CharField(blank=True, default="", max_length=255) 				#should be a choices= ...
+	zipcode= models.CharField(max_length=5,blank=True,default="")
+	home_phone= models.CharField(blank=True, default="",max_length=10)
+	facebook= models.CharField(blank=True,default="", max_length=255)
+	twitter	= models.CharField(blank=True,default="", max_length=255)
 	# + a lot more personal info 
 
 	#login info for registered users 
-	email = models.CharField(unique=True, blank=True, null=True, max_length=40)
-	passwordHash= models.CharField(blank=True, null=True, max_length=255)
-	salt = models.CharField(blank=True, null=True, max_length=10)
-	registrationDate= models.DateField(blank=True, null=True)
+	email = models.CharField(unique=True, blank=True, max_length=40, default="")
+	password_hash= models.CharField(blank=True, default="", max_length=255)
+	salt = models.CharField(blank=True, default="", max_length=10)
+	registration_date= models.DateField(blank=True, null=True)
 
 
 class Meet(models.Model):
@@ -82,7 +97,8 @@ class Coaches(models.Model):
 	role = models.CharField(max_length=255)
 	phone = models.CharField(max_length=255)
 	email = models.CharField(max_length=255)
-	team = models.ForeignKey(Team, on_delete=models.CASCADE)
+	team = models.ForeignKey(Team, on_delete=models.SET_DEFAULT, default="")		#assuming same logic as when deleting the team 
+																					#(unless email gets changed when moving teams )
 
 
 
@@ -90,6 +106,7 @@ class Coaches(models.Model):
 #maybe should have a separate one just for relay times
 #not handling splits, maybe should be separate class with one-to-many relationship to Time
 class Time(models.Model):
+
 
 	swimmer = models.ManyToManyField(Swimmer) 										#in case of relays use ManyToManyField
 	time = models.CharField(max_length=8) 											#should be mm:ss.hh, can't find something suitable
