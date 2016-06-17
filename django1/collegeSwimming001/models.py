@@ -107,11 +107,10 @@ class Time(models.Model):
 		("Time trial","Time trial")
 	)
 
-	swimmer = models.ManyToManyField(Swimmer) 										#in case of relays use ManyToManyField
+	swimmer = models.ForeignKey(Swimmer, default ="") 								#foreign key to reference 1 swimmer
 	time = models.CharField(max_length=8) 											#should be mm:ss.hh, can't find something suitable
 	meet= models.ForeignKey(Meet, on_delete = models.CASCADE)						#can only belong to single meet
 	place = models.PositiveIntegerField()											#what place did the swimmer get in the event
 	points = models.PositiveIntegerField()											#how many points did he earn for his team
 	event = models.ForeignKey(Event)
 	time_type= models.CharField(choices= TYPES, max_length=11, default="Final") 	#setting default to Final ( as in Timed Final )
-	
