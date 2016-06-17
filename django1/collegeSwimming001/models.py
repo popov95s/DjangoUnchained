@@ -39,18 +39,10 @@ class Event(models.Model):
 		("SCM", "Short Course Meters"),
 		("LCM", "Long Course Meters")
 	)
-	TYPES = (
-		("Prelim","Preliminary"),
-		("Semi", "Semi-Final"),
-		("Final", "Final"),
-		("Swim-Off","Swim-Off"),
-		("Time trial","Time trial")
-	)
 	#needs logic for distances and events to make sure there's no 1650LCM Fly
 	event = models.CharField(choices=EVENTS,max_length=10)
 	#distance = models.IntegerField(choices=DISTANCES)
 	course = models.CharField(choices=COURSES, max_length=3)
-	event_type= models.CharField(choices= TYPES, max_length=11, default="Final") 	#setting default to Final ( as in Timed Final )
 	
 
 class Swimmer(models.Model):
@@ -107,6 +99,13 @@ class Coaches(models.Model):
 #not handling splits, maybe should be separate class with one-to-many relationship to Time
 class Time(models.Model):
 
+	TYPES = (
+		("Prelim","Preliminary"),
+		("Semi", "Semi-Final"),
+		("Final", "Final"),
+		("Swim-Off","Swim-Off"),
+		("Time trial","Time trial")
+	)
 
 	swimmer = models.ManyToManyField(Swimmer) 										#in case of relays use ManyToManyField
 	time = models.CharField(max_length=8) 											#should be mm:ss.hh, can't find something suitable
@@ -114,4 +113,5 @@ class Time(models.Model):
 	place = models.PositiveIntegerField()											#what place did the swimmer get in the event
 	points = models.PositiveIntegerField()											#how many points did he earn for his team
 	event = models.ForeignKey(Event)
-
+	time_type= models.CharField(choices= TYPES, max_length=11, default="Final") 	#setting default to Final ( as in Timed Final )
+	
