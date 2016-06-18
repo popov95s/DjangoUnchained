@@ -114,3 +114,9 @@ class Time(models.Model):
 	points = models.PositiveIntegerField()											#how many points did he earn for his team
 	event = models.ForeignKey(Event)
 	time_type= models.CharField(choices= TYPES, max_length=11, default="Final") 	#setting default to Final ( as in Timed Final )
+	team = models.ForeignKey(Team, default="")										#FK to reference 1 team
+
+
+#Relay time is a separate class used just for relays
+#class RelayTime(models.Model):
+#	lead_off= models.ForeignKey(Time,default="")									#lead of is a time and holds every  ///won't work
