@@ -118,5 +118,6 @@ class Time(models.Model):
 
 
 #Relay time is a separate class used just for relays
-#class RelayTime(models.Model):
-#	lead_off= models.ForeignKey(Time,default="")									#lead of is a time and holds every  ///won't work
+class RelayTime(models.Model):
+	lead_off= models.ForeignKey(Time,default="",related_name="lead_off")			#lead off 
+	legs = models.ManyToManyField(Time, related_name="legs")						#all other swimmers in that relay
