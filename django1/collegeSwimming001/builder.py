@@ -4,7 +4,7 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 import json
 from six.moves import urllib
-from .models import Meet, Team
+from .models import Meet, Team, Conference, Division
 
 
 class Event :
@@ -41,10 +41,13 @@ def computeShifts(pattern):
 	
 	
 def buildSchedule(input1):
+	#get conference (default to AAC to avoid doing stuff)
+	c= Conference.objects.get(name='AAC')
 	#get or create team
-	t= Team.objects.get_or_create(name= 'input1', gender= 'M')
-	t.save()
-	input1 = input1+('Men Swimming & diving')
+	t, created= Team.objects.get_or_create(name= 'input1', gender= 'M', conference=c)
+	if created==False:
+		t.save()
+	input1 = input1+(' Men Swimming & diving')
 	query = urllib.parse.urlencode({'q': input1})
 	url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&%s' % query
 	search_response = urllib.request.urlopen(url)
@@ -84,6 +87,7 @@ def buildSchedule(input1):
 		for event in events: 
 				
 			#check if meet exists, if not create it
-			e = Meet.objects.get_or_create(name = event.name, gender='M', city = event.location, state=event.location)
+			if Meet.objects.filter(name= event.name).count() == 0 :
+				e = Meet.objects.create(name = event.name, gender='M', city = event.location, state=event.location)
 			e.teams.add(t)
 			e.save()
