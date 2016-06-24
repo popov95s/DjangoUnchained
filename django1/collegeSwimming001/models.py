@@ -47,7 +47,7 @@ class Event(models.Model):
 
 class Swimmer(models.Model):
 	name = models.CharField(max_length=255)
-	date_of_birth = models.DateField(blank=True,default= "")
+	date_of_birth = models.DateField()
 	teams = models.ManyToManyField(Team)
 	grad_year = models.DateField() 													#only using year here
 	city = models.CharField(blank=True, default ="",max_length=255)
@@ -80,9 +80,12 @@ class Meet(models.Model):
 	state = models.CharField(max_length=255)
 	date = models.DateField()
 	gender = models.CharField(choices=GENDERS, max_length=1)
-	status = models.CharField(choices=STATUSES, max_length=1)
-	
-
+	status = models.CharField(choices=STATUSES, max_length=1, default="N")
+	def __str__(self):
+		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n Teams: " % (self.name, self.city,self.state,self.gender,self.status, self.date)
+		for team in self.teams.all() : 
+			str+= team.name
+		return str
 
 class Coaches(models.Model):
 	name= models.CharField(max_length=255)

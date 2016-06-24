@@ -13,7 +13,7 @@ def index(request):
 		# check whether it's valid:
 		if form.is_valid():
 			buildSchedule(form.cleaned_data['team_name'])
-			return HttpResponseRedirect('/event/%d' %Meet.objects.latest('id') )
+			return HttpResponseRedirect('/meet/%d' %Meet.objects.latest('id').id )
 
     # if a GET (or any other method) we'll create a blank form
 	else:
@@ -23,4 +23,4 @@ def index(request):
 	
 def meet(request, meet_id):
 	m = Meet.objects.get(pk=meet_id)
-	return HttpResponse(m.name)
+	return HttpResponse(m)
