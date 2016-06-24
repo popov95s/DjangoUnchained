@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from .models import Meet
 from .forms import TeamScheduleForm
+from builder import buildSchedule
+
 
 def index(request):  
 	if request.method == 'POST':
@@ -10,8 +12,8 @@ def index(request):
 		form = TeamScheduleForm(request.POST)
 		# check whether it's valid:
 		if form.is_valid():
-			
-			return HttpResponseRedirect('/%s'  %form.cleaned_data['team_name'])
+			buildSchedule(form.cleaned_data['team_name'])
+			return HttpResponseRedirect('/event/%d' %Meet.objects.latest('id') )
 
     # if a GET (or any other method) we'll create a blank form
 	else:

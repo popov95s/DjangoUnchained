@@ -3,8 +3,8 @@ import re
 from collections import defaultdict
 from bs4 import BeautifulSoup
 import json
-import urllib.request, urllib.parse
-from .models import Meet
+from six.moves import urllib
+from .models import Meet, Team
 
 
 class Event :
@@ -40,8 +40,11 @@ def computeShifts(pattern):
 	return shifts
 	
 	
-def buildSchedule(input1)
-	input1 = input1+('Swimming & diving')
+def buildSchedule(input1):
+	#get or create team
+	t= Team.objects.get_or_create(name= 'input1', gender= 'M')
+	t.save()
+	input1 = input1+('Men Swimming & diving')
 	query = urllib.parse.urlencode({'q': input1})
 	url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&%s' % query
 	search_response = urllib.request.urlopen(url)
@@ -49,7 +52,6 @@ def buildSchedule(input1)
 	results = json.loads(search_results)
 	data = results['responseData']
 	hits = data['results']
-	
 	r = requests.get(kmpFirstMatch("sched",hits))
 	if r==None:
 		return false
@@ -78,4 +80,10 @@ def buildSchedule(input1)
 				if counter<4 and td.get('class')[0]=="row-text":
 					temp.append(td.text)
 					counter=counter+1
-		
+					
+		for event in events: 
+				
+			#check if meet exists, if not create it
+			e = Meet.objects.get_or_create(name = event.name, gender='M', city = event.location, state=event.location)
+			e.teams.add(t)
+			e.save()
