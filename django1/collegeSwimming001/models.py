@@ -31,9 +31,6 @@ class Event(models.Model):
 		("Fly", "Butterfly"),
 		("IM", "Individual Medley")
 	)
-	#DISTANCES= (
-	#	50,100,200,400,500,800,1000,1500,1650
-	#)
 	COURSES = (
 		("SCY", "Short Course Yards"),
 		("SCM", "Short Course Meters"),
@@ -41,7 +38,7 @@ class Event(models.Model):
 	)
 	#needs logic for distances and events to make sure there's no 1650LCM Fly
 	event = models.CharField(choices=EVENTS,max_length=10)
-	#distance = models.IntegerField(choices=DISTANCES)
+	distance = models.IntegerField()
 	course = models.CharField(choices=COURSES, max_length=3)
 	
 
@@ -67,10 +64,6 @@ class Swimmer(models.Model):
 
 
 class Meet(models.Model):
-	GENDERS = (
-		("M", "Men"),
-		("W", "Women")
-	)
 	STATUSES =  (
 		("C","Completed"), ("I","In Progress"), ("N","Not started")
 	)
@@ -78,8 +71,8 @@ class Meet(models.Model):
 	teams = models.ManyToManyField(Team)
 	city = models.CharField(max_length=255)
 	state = models.CharField(max_length=255)
-	date = models.DateField()
-	gender = models.CharField(choices=GENDERS, max_length=1)
+	startDate = models.DateField()
+	endDate = models.DateField()
 	status = models.CharField(choices=STATUSES, max_length=1, default="N")
 	def __str__(self):
 		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n Teams: " % (self.name, self.city,self.state,self.gender,self.status, self.date)
