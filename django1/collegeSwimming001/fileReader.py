@@ -36,7 +36,7 @@ for line in meetFile.split('\n'):
 		m = Meet(name = meetName, city = meetCity, state = meetState, startDate= meetStartDate, endDate= meetEndDate, status= 'C')
 		
 		print meetName +  '\n' + meetCity + '\n' + meetState  + '\n' + meetCountry + '\n' + meetStartDate + '\n' + meetEndDate + '\n' + meetCourse + '\n'
-		
+		m.save()
 		
 		
 	elif line[0:2]== 'C1':
@@ -49,6 +49,8 @@ for line in meetFile.split('\n'):
 		t = Team(name = currentTeam, abbreviation=teamAbbreviation, city= teamCity, state= teamState, conference=c, gender = 'M')
 		
 		t.save()
+		#blows up stack
+		m.teams.add(t)
 		print currentTeam + '\n' + teamAbbreviation + '\n' + teamCity + '\n' + teamState
 	elif line[0:2]== 'D0':
 		swimmerName= line[11:39].strip(' ')
@@ -64,5 +66,3 @@ for line in meetFile.split('\n'):
 	#
 	elif line[0:2]== 'Z0':
 		break
-
-m.save()
