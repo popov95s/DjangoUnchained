@@ -15,13 +15,17 @@ class Team(models.Model):
 		("M", "Men"),
 		("W", "Women")
 	)
-	
 	name = models.CharField(max_length=255)											#not sure if this should make Meet.gender redundant
+	abbreviation = models.CharField(max_length=16, default= "")
 	conference = models.ForeignKey(Conference, on_delete= models.SET_DEFAULT,default= "")
-
 	gender = models.CharField(choices=GENDERS, max_length=1, default="")			#should not be default = "" but it wants a default since rows already exist
-
+	city = models.CharField(blank=True, default ="",max_length=255)
+	state =models.CharField(blank=True, default="", max_length=2)
+	
 	#possibly something about facilities
+	def __str__(self):
+		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n Teams: " % (self.name, self.abbreviation,self.city, self.state, self.gender,self.conference.name)
+		return str
 
 class Event(models.Model):
 	EVENTS = (
@@ -75,7 +79,7 @@ class Meet(models.Model):
 	endDate = models.DateField()
 	status = models.CharField(choices=STATUSES, max_length=1, default="N")
 	def __str__(self):
-		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n Teams: " % (self.name, self.city,self.state,self.gender,self.status, self.date)
+		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n Teams: " % (self.name, self.city,self.state, self.status, self.startDate,self.endDate)
 		for team in self.teams.all() : 
 			str+= team.name
 		return str

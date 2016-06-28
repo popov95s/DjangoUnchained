@@ -1,9 +1,20 @@
 import re
 
-from .models import Team, Meet, Event, Time
+from collegeSwimming001.models import Team, Meet, Event, Time, Conference
 
-meetFile = file("55329.cl2").read()
-currentTeam = ""
+def fixDate(date):
+	date = date[4:8] + '-' + date[0:2] + '-' + date[2:4]
+	return date
+
+meetFile = file(r'C:\Users\Stefan Popov\Documents\django1\django1\collegeSwimming001\57225.cl2').read()
+
+
+#meet and team objects used 
+m, t=""
+
+
+c = Conference.objects.filter(name='AAC').first()
+
 
 for line in meetFile.split('\n'):
 
@@ -20,8 +31,12 @@ for line in meetFile.split('\n'):
 		meetStartDate = line[121:129].strip(' ')
 		meetEndDate= line[129:137].strip(' ')
 		meetCourse = line[149:150].strip(' ')
-		m = Meet(name = meetName, city = meetCity, state = meetState, startDate= meetStartDate, endDate= meetEndDate)
+		meetStartDate= fixDate(meetStartDate)
+		meetEndDate= fixDate(meetEndDate)
+		m = Meet(name = meetName, city = meetCity, state = meetState, startDate= meetStartDate, endDate= meetEndDate, status= 'C')
+		
 		print meetName +  '\n' + meetCity + '\n' + meetState  + '\n' + meetCountry + '\n' + meetStartDate + '\n' + meetEndDate + '\n' + meetCourse + '\n'
+		
 		
 		
 	elif line[0:2]== 'C1':
@@ -29,6 +44,11 @@ for line in meetFile.split('\n'):
 		teamAbbreviation = line[47:63].strip(' ')
 		teamCity = line[107:127].strip(' ')
 		teamState = line[127:129].strip(' ')
+		#default conference to AAC for simplicity and gender to M 
+		# TODO : should teams have genders, since it can't be taken from meet results
+		t = Team(name = currentTeam, abbreviation=teamAbbreviation, city= teamCity, state= teamState, conference=c, gender = 'M')
+		
+		t.save()
 		print currentTeam + '\n' + teamAbbreviation + '\n' + teamCity + '\n' + teamState
 	elif line[0:2]== 'D0':
 		swimmerName= line[11:39].strip(' ')
@@ -44,4 +64,5 @@ for line in meetFile.split('\n'):
 	#
 	elif line[0:2]== 'Z0':
 		break
-	
+
+m.save()
