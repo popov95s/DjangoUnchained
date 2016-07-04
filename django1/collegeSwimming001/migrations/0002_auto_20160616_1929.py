@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='swimmer',
             name='date_of_birth',
-            field=models.DateField(default=b'', blank=True),
+            field=models.DateField(null=True, blank=True),
         ),
         migrations.AddField(
             model_name='swimmer',
