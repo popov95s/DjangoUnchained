@@ -131,7 +131,7 @@ class Time(models.Model):
 	team = models.ForeignKey(Team, default="")										#FK to reference 1 team
 
 	def __str__(self):
-		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n " % (self.swimmer.name, self.time,self.meet.name, self.place, self.points,self.event.stroke)
+		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n " % (self.swimmer.name, self.time,self.meet.name, self.place, self.event.distance,self.event.stroke)
 		return str
 #Relay time is a separate class used just for relays
 class RelayTime(models.Model):
