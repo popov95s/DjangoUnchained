@@ -5,7 +5,7 @@ def fixDate(date):
 	date = date[4:8] + '-' + date[0:2] + '-' + date[2:4]
 	return date
 
-meetFile = file(r'C:\Users\Stefan Popov\Documents\django1\django1\collegeSwimming001\55329.cl2').read()
+meetFile = file(r'C:\Users\Stefan Popov\Documents\django1\django1\collegeSwimming001\57225.cl2').read()
 
 #meet and team objects used 
 m = ""
@@ -27,14 +27,14 @@ for line in meetFile.split('\n'):
 		meetCity = line[85:105].strip(' ')
 		meetState = line[105:107].strip(' ')
 		meetCountry = line[117:120].strip(' ')
-		meetStartDate = line[121:129].strip(' ')
-		meetEndDate= line[129:137].strip(' ')
+		meetstart_date = line[121:129].strip(' ')
+		meetend_date= line[129:137].strip(' ')
 		meetCourse = line[149:150].strip(' ')
-		meetStartDate= fixDate(meetStartDate)
-		meetEndDate= fixDate(meetEndDate)
-		m = Meet(name = meetName, city = meetCity, state = meetState, startDate= meetStartDate, endDate= meetEndDate, status= 'C')
+		meetstart_date= fixDate(meetstart_date)
+		meetend_date= fixDate(meetend_date)
+		m = Meet(name = meetName, city = meetCity, state = meetState, start_date= meetstart_date, end_date= meetend_date, status= 'C')
 		
-		print meetName +  '\n' + meetCity + '\n' + meetState  + '\n' + meetCountry + '\n' + meetStartDate + '\n' + meetEndDate + '\n' + meetCourse + '\n'
+		print meetName +  '\n' + meetCity + '\n' + meetState  + '\n' + meetCountry + '\n' + meetstart_date + '\n' + meetend_date + '\n' + meetCourse + '\n'
 		m.save()
 		
 		

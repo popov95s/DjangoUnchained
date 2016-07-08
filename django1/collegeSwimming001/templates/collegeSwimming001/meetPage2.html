@@ -1,0 +1,10 @@
+{% if meets %}
+    <ul>
+    {% for meet  in meets %}
+        <li><a href="/meet/{{meet.id}}/">{{meet}}
+		</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No meets are available.</p>
+{% endif %}

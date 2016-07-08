@@ -1,0 +1,35 @@
+<script src="http://www.chartjs.org/assets/Chart.js"></script>
+<canvas id="myChart" width="400" height="400"></canvas>
+<div>{{sw}}</div>
+<script>
+
+//radar chart data
+var radarData = {
+	labels : ["Sprint","Back","Breast","Fly","IM","Distance"],
+	datasets : [
+		{
+			 fillColor: "rgba(102,45,145,.1)",
+			 strokeColor: "rgba(102,45,145,1)",
+			pointColor : "rgba(220,220,220,1)",
+			pointStrokeColor : "#fff",
+			data : [{{sw.0}},{{sw.1}},{{sw.2}},{{sw.3}},{{sw.4}},{{sw.5}}]
+		}
+	]
+}
+
+
+
+
+//Create Radar chart
+var ctx2 = document.getElementById("myChart").getContext("2d");
+//var myNewChart = new Chart(ctx2).Radar(radarData);
+
+var myChart = new Chart(ctx2).Radar(radarData, {
+    scaleOverride: true,
+    scaleSteps: 5,
+    scaleStepWidth: 20,
+    scaleStartValue: 0,
+	scaleEndValue:100,
+});
+
+</script>
