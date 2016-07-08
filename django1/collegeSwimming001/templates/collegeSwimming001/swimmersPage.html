@@ -1,9 +1,9 @@
 {% if swimmers %}
     <ul>
-    {% for swimmer in swimmers %}
+    {% for swimmer  in swimmers %}
         <li><a href="/swimmer/{{swimmer.id}}/">{{ swimmer.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
-    <p>No polls are available.</p>
+    <p>No swimmers are available.</p>
 {% endif %}
