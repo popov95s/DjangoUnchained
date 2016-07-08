@@ -58,7 +58,7 @@ def meets3(request):
 	return HttpResponse(template.render(context,request))
 	
 def swimmers(request):
-	swimmers = Swimmer.objects.all().values('name','id').annotate(total=Count('time')).filter(total=3	).order_by('total')
+	swimmers = Swimmer.objects.all().values('name','id').annotate(total=Count('time')).filter(total__gte=3	).order_by('total')
 	template = loader.get_template('collegeSwimming001/swimmersPage.html')
 	context ={
 		'swimmers':swimmers
