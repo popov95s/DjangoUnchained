@@ -25,11 +25,40 @@ def index(request):
 	return render(request, 'collegeSwimming001/scheduleForm.html', {'form': form})
 	
 def meet(request, meet_id):
-	m = Meet.objects.get(pk=meet_id)
-	return HttpResponse(m)
+	m = Time.objects.filter(meet__id=meet_id)
+	template = loader.get_template('collegeSwimming001/meetDetailsPage.html')
+	context = {
+		'meet' : m
+	}
+	return HttpResponse(template.render(context,request))
+
+def meets(request):
+	m = Meet.objects.all().order_by('-start_date')
+	template = loader.get_template('collegeSwimming001/meetPage1.html')
+	context = {
+		'meets' : m
+	}
+	return HttpResponse(template.render(context,request))
+	
+def meets2(request):
+	m = Meet.objects.all().order_by('-start_date')
+	template = loader.get_template('collegeSwimming001/meetPage2.html')
+	context = {
+		'meets' : m
+	}
+	return HttpResponse(template.render(context,request))
+
+	
+def meets3(request):
+	m = Time.objects.all().order_by('-meet__start_date')
+	template = loader.get_template('collegeSwimming001/meetPage3.html')
+	context = {
+		'meets' : m
+	}
+	return HttpResponse(template.render(context,request))
 	
 def swimmers(request):
-	swimmers = Swimmer.objects.all().values('name','id').annotate(total=Count('time')).filter(total=3).order_by('total')
+	swimmers = Swimmer.objects.all().values('name','id').annotate(total=Count('time')).filter(total=3	).order_by('total')
 	template = loader.get_template('collegeSwimming001/swimmersPage.html')
 	context ={
 		'swimmers':swimmers

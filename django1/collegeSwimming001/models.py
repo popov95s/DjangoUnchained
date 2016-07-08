@@ -89,13 +89,13 @@ class Meet(models.Model):
 	teams = models.ManyToManyField(Team)
 	city = models.CharField(max_length=255)
 	state = models.CharField(max_length=255)
-	startDate = models.DateField()
-	endDate = models.DateField()
+	start_date = models.DateField()
+	end_date = models.DateField()
 	status = models.CharField(choices=STATUSES, max_length=1, default="N")
 	def __str__(self):
-		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n Teams: " % (self.name, self.city,self.state, self.status, self.startDate,self.endDate)
+		str = "%s \t,  %s \t,  %s \t,  %s  \t,  %s   \t,   %s  \n Teams: " % (self.name, self.city,self.state, self.status, self.start_date,self.end_date)
 		for team in self.teams.all() : 
-			str+= team.name
+			str+= team.name +'   '
 		return str
 
 class Coaches(models.Model):

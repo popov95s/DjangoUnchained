@@ -1,0 +1,9 @@
+{% if meet %}
+    <ul>
+    {% for m  in meet %}
+        <li>{{ m }}, {{m.team.name}}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No results are available.</p>
+{% endif %}
