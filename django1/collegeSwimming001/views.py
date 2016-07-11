@@ -26,17 +26,19 @@ def index(request):
 	
 def meetDetails(request, meet_id):
 	m = Meet.objects.filter(pk=meet_id).first()
+	events= Time.objects.filter(meet__id= meet_id).values('event__distance', 'event__stroke', 'event__id').distinct()
 	template = loader.get_template('collegeSwimming001/meetDetailsPage.html')
 	context = {
-		'meet' : m
+		'meet' : m,
+		'events':events
 	}
 	return HttpResponse(template.render(context,request))
 
 def meetWithEvent(request, meet_id, event_id):
-	m = Meet.objects.filter(pk=meet_id, event_id)
-	template = loader.get_template('collegeSwimming001/meetDetailsPage.html')
+	event = Time.objects.filter(meet__id=meet_id, event__id=event_id).order_by('place')
+	template = loader.get_template('collegeSwimming001/eventDetailsPage.html')
 	context = {
-		'meet' : m
+		'event' : event
 	}
 	return HttpResponse(template.render(context,request))
 	
