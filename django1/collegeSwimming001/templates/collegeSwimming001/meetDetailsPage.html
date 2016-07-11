@@ -1,6 +1,5 @@
 {% if meet %}
     <p>{{meet}}</p>
-	{{events}}
 	{% for event in events %}
 		<li><a href="/meets/{{meet.id}}/{{event.event__id}}">{{event.event__distance}}, {{event.event__stroke}}</li>
 	{%endfor%}
