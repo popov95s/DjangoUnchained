@@ -1,6 +1,16 @@
 <script src="http://www.chartjs.org/assets/Chart.js"></script>
-<canvas id="myChart" width="400" height="400"></canvas>
+<div>
+	<canvas id="myChart" width="400" height="400"></canvas>
+</div>
+<div> 
+	<canvas id = "barChart" width="400" height="400"></canvas>
+</div>
+<div> 
+	<canvas id="pieChart" width="400" height ="400"></canvas>
+</div>
 <div>{{sw}}</div>
+
+
 <script>
 
 //radar chart data
@@ -18,11 +28,57 @@ var radarData = {
 }
 
 
+var pieData = [
+	{
+		value: {{sw.0}},
+		label: "Sprint",
+		color: '#811BD6'
+	},
+	{
+      value: {{sw.1}},
+      label: 'Back',
+      color: '#319BD1'
+   },
+   {
+      value: {{sw.2}},
+      label: 'Breast',
+      color: '#9CBABA'
+   },
+   {
+      value: {{sw.3}},
+      label: 'Fly',
+      color: '#D18177'
+   },
+   {
+      value : {{sw.4}},
+      label: 'IM',
+      color: '#6AE128'
+   },
+   {
+      value : {{sw.5}},
+      label: 'Distance',
+      color: '#6FB912'
+   }
+];
 
-
+var ctx= document.getElementById("barChart").getContext("2d");
 //Create Radar chart
 var ctx2 = document.getElementById("myChart").getContext("2d");
 //var myNewChart = new Chart(ctx2).Radar(radarData);
+var ctx3 = document.getElementById("pieChart").getContext("2d");
+
+var pieChart = new Chart(ctx3).Pie(pieData);
+
+
+var barChart = new Chart(ctx).Bar(radarData,{
+    scaleOverride: true,
+    scaleSteps: 5,
+    scaleStepWidth: 20,
+    scaleStartValue: 0,
+	scaleEndValue:100,
+});
+
+
 
 var myChart = new Chart(ctx2).Radar(radarData, {
     scaleOverride: true,
