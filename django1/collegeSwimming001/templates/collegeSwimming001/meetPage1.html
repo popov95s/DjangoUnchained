@@ -1,7 +1,7 @@
 {% if meets %}
     <ul>
     {% for meet  in meets %}
-        <li><a href="/meet/{{meet.id}}/">{{ meet.name}}, {{meet.start_date }}</a></li>
+        <li><a href="/meets/{{meet.id}}/">{{ meet.name}}, {{meet.start_date }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

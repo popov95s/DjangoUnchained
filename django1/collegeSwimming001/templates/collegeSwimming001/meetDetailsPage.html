@@ -1,9 +1,9 @@
 {% if meet %}
-    <ul>
-    {% for m  in meet %}
-        <li>{{ m }}, {{m.team.name}}</li>
-    {% endfor %}
-    </ul>
+    <p>{{meet}}</p>
+	{{events}}
+	{% for event in events %}
+		<li><a href="/meets/{{meet.id}}/{{event.event__id}}">{{event.event__distance}}, {{event.event__stroke}}</li>
+	{%endfor%}
 {% else %}
-    <p>No results are available.</p>
+    <p>No info is available.</p>
 {% endif %}

@@ -24,34 +24,28 @@ def index(request):
 
 	return render(request, 'collegeSwimming001/scheduleForm.html', {'form': form})
 	
-def meet(request, meet_id):
-	m = Time.objects.filter(meet__id=meet_id)
+def meetDetails(request, meet_id):
+	m = Meet.objects.filter(pk=meet_id).first()
+	events= Time.objects.filter(meet__id= meet_id).values('event__distance', 'event__stroke', 'event__id').distinct()
 	template = loader.get_template('collegeSwimming001/meetDetailsPage.html')
 	context = {
-		'meet' : m
+		'meet' : m,
+		'events':events
 	}
 	return HttpResponse(template.render(context,request))
 
+def meetWithEvent(request, meet_id, event_id):
+	event = Time.objects.filter(meet__id=meet_id, event__id=event_id).order_by('place')
+	template = loader.get_template('collegeSwimming001/eventDetailsPage.html')
+	context = {
+		'event' : event
+	}
+	return HttpResponse(template.render(context,request))
+	
+	
 def meets(request):
 	m = Meet.objects.all().order_by('-start_date')
 	template = loader.get_template('collegeSwimming001/meetPage1.html')
-	context = {
-		'meets' : m
-	}
-	return HttpResponse(template.render(context,request))
-	
-def meets2(request):
-	m = Meet.objects.all().order_by('-start_date')
-	template = loader.get_template('collegeSwimming001/meetPage2.html')
-	context = {
-		'meets' : m
-	}
-	return HttpResponse(template.render(context,request))
-
-	
-def meets3(request):
-	m = Time.objects.all().order_by('-meet__start_date')
-	template = loader.get_template('collegeSwimming001/meetPage3.html')
 	context = {
 		'meets' : m
 	}

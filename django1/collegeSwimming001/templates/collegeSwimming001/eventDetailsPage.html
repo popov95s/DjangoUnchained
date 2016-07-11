@@ -1,0 +1,9 @@
+{% if event %}
+    <ul>
+    {% for e  in event %}
+		<li>{{e}}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No meets are available.</p>
+{% endif %}
