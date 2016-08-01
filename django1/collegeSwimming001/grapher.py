@@ -48,7 +48,7 @@ def calculateScores(swimmerID):
 	flyScore = (math.pow((baseTimes[10]/oneFlyTime),3)*1000 + math.pow((baseTimes[11]/twoFlyTime),3)*1000)/2
 	IMScore = (math.pow((baseTimes[12]/twoIMTime),3)*1000 + math.pow((baseTimes[13]/fourIMTime),3)*1000)/2
 	
-	scores = {"Free" : round(sprintScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), "IM" : round(IMScore,2),"Distance" : 501 } #round(distanceScore,2)}
+	scores = {"Free" : round(sprintScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), "IM" : round(IMScore,2),"Distance" : 750 } #round(distanceScore,2)}
 	
 	return scores
 	
