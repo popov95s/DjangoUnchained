@@ -5,7 +5,7 @@ def fixDate(date):
 	date = date[4:8] + '-' + date[0:2] + '-' + date[2:4]
 	return date
 
-meetFile = file(r'C:\Users\Stefan Popov\Documents\django1\django1\collegeSwimming001\57225.cl2').read()
+meetFile = file(r'/home/spopov/Downloads/28695_QVxPJfk.cl2').read()
 
 #meet and team objects used 
 m = ""

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.db.models import Count
 
@@ -61,12 +61,19 @@ def swimmers(request):
 
 def swimmer(request, swimmer_id):
 	sw = Time.objects.filter(swimmer=swimmer_id)
+
+	scores = calculateScores(swimmer_id)
 	
-	oneBreastTime = calculateScores(swimmer_id)
-	oneBreastTime.append(Swimmer.objects.filter(pk=swimmer_id).first().name)
+	swimmerName = Swimmer.objects.filter(pk=swimmer_id).first().name
 	template = loader.get_template('collegeSwimming001/swimmerRadarChart.html')
 	context = {
-		'sw' :oneBreastTime
+		'swimmer_name' : swimmerName,
+		'swimmer_id' : swimmer_id,
+		'scores' : scores
 	}
-	return HttpResponse(template.render(context,request))
+	return HttpResponse(template.render(context),request)
+
+def swimmerChart(request, swimmer_id):
+	scores = calculateScores(swimmer_id)
 	
+	return JsonResponse(scores)

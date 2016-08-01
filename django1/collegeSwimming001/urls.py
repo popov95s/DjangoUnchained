@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^meets/(?P<meet_id>[0-9]+)/$', views.meetDetails, name='meetDetails'),
 	url(r'^swimmer/(?P<swimmer_id>[0-9]+)/$', views.swimmer, name= 'swimmer'),
 	url(r'^swimmer/$', views.swimmers, name= 'swimmers'),
+	url(r'^swimmer/(?P<swimmer_id>[0-9]+)/chart/$', views.swimmerChart, name='swimmerChart'),
 	url(r'^meets/$', views.meets, name ='meetsList'),
 	url(r'^meets/(?P<meet_id>[0-9]+)/(?P<event_id>[0-9]+)/$', views.meetWithEvent, name = 'detailedMeets')
 ]

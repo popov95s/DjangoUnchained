@@ -35,21 +35,23 @@ def calculateScores(swimmerID):
 	twoBreastTime = convertTime(swimmerTimes.filter(event__stroke='3').filter(event__distance=200).order_by('time').first())
 	oneFlyTime= convertTime(swimmerTimes.filter(event__stroke='4').filter(event__distance=100).order_by('time').first())
 	twoFlyTime= convertTime(swimmerTimes.filter(event__stroke='4').filter(event__distance=200).order_by('time').first())
-	twoIMTime= convertTime(swimmerTimes.filter(event__stroke='5').filter(event__distance=200).order_by('time').first())
+	twoIMTime= convertTime(swimmerTimes.filter(event__stroke='5').filter(event__distance=200).order_by('time').first())	
 	fourIMTime= convertTime(swimmerTimes.filter(event__stroke='5').filter(event__distance=400).order_by('time').first())
 	
+
 	#calculate scores
-	sprintScore = (math.pow((baseTimes[0]/fiftyFreeTime),3)*100 + math.pow((baseTimes[1]/oneFreeTime),3)*100)/2
-	distanceScore = (math.pow((baseTimes[3]/fiveFreeTime),3)*100 + math.pow((baseTimes[4]/tenFreeTime),3)*100 + math.pow((baseTimes[5]/mileTime),3)*100)/3
-	backScore = (math.pow((baseTimes[6]/oneBackTime),3)*100 + math.pow((baseTimes[7]/twoBackTime),3)*100)/2
-	breastScore = (math.pow((baseTimes[8]/oneBreastTime),3)*100 + math.pow((baseTimes[9]/twoBreastTime),3)*100)/2
-	flyScore = (math.pow((baseTimes[10]/oneFlyTime),3)*100 + math.pow((baseTimes[11]/twoFlyTime),3)*100)/2
-	IMScore = (math.pow((baseTimes[12]/twoIMTime),3)*100 + math.pow((baseTimes[13]/fourIMTime),3)*100)/2
+	sprintScore = (math.pow((baseTimes[0]/fiftyFreeTime),3)*1000 + math.pow((baseTimes[1]/oneFreeTime),3)*1000 + math.pow((baseTimes[2]/twoFreeTime),3)*1000 + math.pow((baseTimes[3]/fiveFreeTime),3)*1000 + math.pow((baseTimes[4]/tenFreeTime),3)*1000 + math.pow((baseTimes[5]/mileTime),3)*1000)/2
+	distanceScore = (math.pow((baseTimes[3]/fiveFreeTime),3)*1000 + math.pow((baseTimes[4]/tenFreeTime),3)*1000 + math.pow((baseTimes[5]/mileTime),3)*1000)/3
+	print type(distanceScore)
+	backScore = (math.pow((baseTimes[6]/oneBackTime),3)*1000 + math.pow((baseTimes[7]/twoBackTime),3)*1000)/2
+	breastScore = (math.pow((baseTimes[8]/oneBreastTime),3)*1000 + math.pow((baseTimes[9]/twoBreastTime),3)*1000)/2
+	flyScore = (math.pow((baseTimes[10]/oneFlyTime),3)*1000 + math.pow((baseTimes[11]/twoFlyTime),3)*1000)/2
+	IMScore = (math.pow((baseTimes[12]/twoIMTime),3)*1000 + math.pow((baseTimes[13]/fourIMTime),3)*1000)/2
+	
+	scores = {"Free" : round(sprintScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), "IM" : round(IMScore,2),"Distance" : 501 } #round(distanceScore,2)}
+	
+	return scores
 	
 	
-	return [sprintScore,backScore,breastScore,flyScore,IMScore,distanceScore]
 	
-	
-	
-	
-	
+print calculateScores(177)
