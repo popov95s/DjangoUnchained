@@ -60,14 +60,14 @@ def swimmers(request):
 	return HttpResponse(template.render(context,request))
 
 def swimmer(request, swimmer_id):
-	sw = Time.objects.filter(swimmer=swimmer_id)
+	#sw = Time.objects.filter(swimmer=swimmer_id)
 
 	scores = calculateScores(swimmer_id)
 	
-	swimmerName = Swimmer.objects.filter(pk=swimmer_id).first().name
+	#swimmerName = Swimmer.objects.filter(pk=swimmer_id).first().name
 	template = loader.get_template('collegeSwimming001/swimmerRadarChart.html')
 	context = {
-		'swimmer_name' : swimmerName,
+	#	'swimmer_name' : swimmerName,
 		'swimmer_id' : swimmer_id,
 		'scores' : scores
 	}
