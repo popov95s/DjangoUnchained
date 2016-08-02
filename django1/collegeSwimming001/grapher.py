@@ -134,7 +134,7 @@ def calculateScores(swimmerID):
 
 	scores = {"Free" : round(freeScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), 
 	"IM" : round(IMScore,2),"Distance" : ratio,
-	"FreeSprint" : round(sprintFreeScore,2), 'midFreeScore' : midFreeScore, 'distanceFreeScore':distanceFreeScore,
+	"sprintFreeScore" : round(sprintFreeScore,2), 'midFreeScore' : midFreeScore, 'distanceFreeScore':distanceFreeScore,
 	'sprintBackScore' : oneBackPoints, 'midBackScore': twoBackPoints, 'sprintBreastScore' : oneBreastPoints,
 	'midBreastScore': twoBreastPoints, 'sprintFlyScore' : oneFlyPoints, 'midFlyScore': twoFlyPoints,
 	'midIMScore' : round(IMScore,2)
