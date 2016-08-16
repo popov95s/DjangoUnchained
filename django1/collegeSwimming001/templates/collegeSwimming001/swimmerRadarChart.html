@@ -2,19 +2,13 @@
 				type="text/javascript"></script>
 <script src="http://www.chartjs.org/assets/Chart.js"></script>
 <div>
-	<canvas id="myChart" width="400" height="400"></canvas>
+	<canvas id="radarChart" width="400" height="400"></canvas>
 </div>
 <div>
-	<canvas id="gradient" width="400" height="100"></canvas>
+	<canvas id="gradient" width="400" height="30"></canvas>
 </div>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-       <div id="series_chart_div" style="width: 900px; height: 500px;"></div>
-
-
-<div> 
-	</div>
 <div>
-	{{scores}}
+	{{scores}} {{times}}
 </div>
 <script>
 $(document).ready(function(){
@@ -25,11 +19,12 @@ $(document).ready(function(){
 				url: "http://localhost:8000/swimmer/{{swimmer_id}}/chart",
 				success: function(data){
 					drawRadarChart(data);
-					drawSeriesChart();
-					drawBarChart(data);
 				}
 		});
 });
+
+//clean this + add mouseover labels for events
+
 
 function drawRadarChart(data){
 	//radar chart data
@@ -46,252 +41,74 @@ function drawRadarChart(data){
 
 		]
 	}
-
 	//Create Radar chart
-	var ctx2 = document.getElementById("myChart").getContext("2d");
+	var ctx2 = document.getElementById("radarChart").getContext("2d");
 	var myChart = new Chart(ctx2).Radar(radarData, {
 			scaleOverride: true,
-			scaleSteps: 5,
-			scaleStepWidth: 250,
+			scaleSteps: 10,
+			scaleStepWidth: 120,
 			scaleStartValue: -100,
 			scaleEndValue:1100,
+			tooltipTemplate: function(valuesObject){
+							 // console.log(valuesObject);
+							  // do different things here based on whatever you want;
+							  return getEvents(valuesObject);
+							}
+			
+			//<%='50 Free' %>:  <%= custom  %>,<%='100 Free' %>:  <%= value  %>"
 	});
 
+	function getEvents(valuesObject){
+		tempStr="";
+		for (event in data.times){
+			if (valuesObject.label=='Free' && event[0]=='1'){ 
+				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
+			}
+			if (valuesObject.label=='Back' && event[0]=='2'){
+				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n'; 
+			}
+			if (valuesObject.label=='Breast' && event[0]=='3'){
+				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n'; 
+			}
+			if (valuesObject.label=='Fly' && event[0]=='4'){
+				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
+			} 
+			if (valuesObject.label=='IM' && event[0]=='5'){
+				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
+			} 
+
+		}
+		if (tempStr==""){
+			return "No " + valuesObject.label + " results found.";
+		}
+		else return tempStr;
+	}
+ 
+	
 						
 }
 
+
+//gradient
 var c=document.getElementById("gradient");
 var ctx=c.getContext("2d");
 var grd=ctx.createLinearGradient(0,0,400,0);
 
 grd.addColorStop(0,"red");
-
-//grd.addColorStop(0.5,"green");
-
 grd.addColorStop(1,"blue");
 
 ctx.fillStyle=grd;
 ctx.fillRect(20,20,400,50);
 
+//returns a red to blue rgba string 
 function colorCalculator(distance, alphaSpace){
 
-	/*if (distance <= 1275.0)
-		return "rgba(" + String(255-parseInt(distance/5)) + "," + String(0+parseInt(distance/5))+ ",0,"+String(alphaSpace)+ ")";
-	else if (distance > 1275.0){
-		return "rgba(0," + String(510 - parseInt(distance/5)) + "," + String(-255+parseInt(distance/5))+ ","+String(alphaSpace)+ ")";
-*/
 	return "rgba(" + String(255-parseInt(distance/10)) + ",0," + String(0+parseInt(distance/10))+ ","+String(alphaSpace)+ ")";
 	
 }
 
-
-
-		//Bubble chart
-	 	google.charts.load('current', {'packages':['corechart']});
-	    google.charts.setOnLoadCallback(drawSeriesChart);
-    function drawSeriesChart() {
-
-	    proportions = getProportions();
-	    var data = google.visualization.arrayToDataTable([
-	        ['ID', 'Points', 'Distance', 'Region',     'Proportion'],
-	        ['Free',   {{ scores.Free}},              1.67,      'Sprint', proportions['Free']],
-	        ['Back',   {{ scores.Back}},              1.36,      'Sprint', proportions['Back']],
-	        ['Breast',   {{ scores.Breast}},               1.84,      'Mid-Distance', proportions['Breast']],
-	        ['Fly',    {{scores.Fly}},              2.78,      'Mid-Distance', proportions['Fly']],
-	        ['IM',    {{scores.IM}},              2,         'Mid-Distance', proportions['IM']]
-	    ]);
-
-	    var options = {
-	        title: 'Swimmer best events',
-	        hAxis: {title: 'Distance'},
-	        vAxis: {title: 'Points'},
-	        bubble: {textStyle: {fontSize: 11}}
-	    };
-
-      var chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
-      chart.draw(data, options);
-    }
-
-function getProportions(scores){	
-	var total = {{scores.Free}} + {{scores.Back}}+ {{scores.Breast}} + {{scores.Fly}} + {{scores.IM}};
-	return {'Free' : {{scores.Free}}/total, 'Back': {{scores.Back}}/total, 'Breast':{{scores.Breast}}/total, 'Fly':{{scores.Fly}}/total, 'IM': {{scores.IM}}/total}
-}
-
-
 </script>
 
 
 
-
-
-
-<style>
-/*
-/*
-.chart rect {
-  fill: steelblue;
-}
-*/
-.chart .legend {
-  fill: black;
-  font: 14px sans-serif;
-  text-anchor: start;
-  font-size: 12px;
-}
-
-.chart text {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: end;
-}
-
-.chart .label {
-  fill: black;
-  font: 14px sans-serif;
-  text-anchor: end;
-}
-
-.bar:hover {
-  fill: brown;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-
-</style>
-<svg class="chart"></svg>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script>
-function drawBarChart(data1){
-	var data = {
-	  labels: [
-	    'Free', 'Back', 'Breast',
-	    'Fly', 'IM'
-	  ],
-	  series: [
-	    {
-	      label: 'Sprint',
-	      values: [data1.sprintFreeScore, data1.sprintBackScore, data1.sprintBreastScore, data1.sprintFlyScore, 0]
-	    },
-	    {
-	      label: 'Mid-Distance',
-	      values: [data1.midFreeScore, data1.midBackScore, data1.midBreastScore, data1.midFlyScore, data1.midIMScore]
-	    },
-	    {	
-	      label: 'Distance',
-	      values: [data1.distanceFreeScore,0,0,0,0]
-	    },]
-	};
-
-	var chartWidth       = 300,
-	    barHeight        = 20,
-	    groupHeight      = barHeight * data.series.length,
-	    gapBetweenGroups = 10,
-	    spaceForLabels   = 150,
-	    spaceForLegend   = 150;
-
-	// Zip the series data together (first values, second values, etc.)
-	var zippedData = [];
-	for (var i=0; i<data.labels.length; i++) {
-	  for (var j=0; j<data.series.length; j++) {
-	    zippedData.push(data.series[j].values[i]);
-	  }
-	}
-
-	// Color scale
-	var color = d3.scale.category20();
-	var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
-
-	var x = d3.scale.linear()
-	    .domain([0, d3.max(zippedData)])
-	    .range([0, chartWidth]);
-
-	var y = d3.scale.linear()
-	    .range([chartHeight + gapBetweenGroups, 0]);
-
-	var yAxis = d3.svg.axis()
-	    .scale(y)
-	    .tickFormat('')
-	    .tickSize(0)
-	    .orient("left");
-
-	// Specify the chart area and dimensions
-	var chart = d3.select(".chart")
-	    .attr("width", spaceForLabels + chartWidth + spaceForLegend)
-	    .attr("height", chartHeight);
-
-	// Create bars
-	var bar = chart.selectAll("g")
-	    .data(zippedData)
-	    .enter().append("g")
-	    .attr("transform", function(d, i) {
-	      return "translate(" + spaceForLabels + "," + (i * barHeight + gapBetweenGroups * (0.5 + Math.floor(i/data.series.length))) + ")";
-	    });
-
-	// Create rectangles of the correct width
-	bar.append("rect")
-	    .attr("fill", function(d,i) { return color(i % data.series.length); })
-	    .attr("class", "bar")
-	    .attr("width", x)
-	    .attr("height", barHeight - 1);
-
-	// Add text label in bar
-	bar.append("text")
-	    .attr("x", function(d) { return x(d) - 3; })
-	    .attr("y", barHeight / 2)
-	    .attr("fill", "red")
-	    .attr("dy", ".35em")
-	    .text(function(d) { return d; });
-
-	// Draw labels
-	bar.append("text")
-	    .attr("class", "label")
-	    .attr("x", function(d) { return - 10; })
-	    .attr("y", groupHeight / 2)
-	    .attr("dy", ".35em")
-	    .text(function(d,i) {
-	      if (i % data.series.length === 0)
-	        return data.labels[Math.floor(i/data.series.length)];
-	      else
-	        return ""});
-
-	chart.append("g")
-	      .attr("class", "y axis")
-	      .attr("transform", "translate(" + spaceForLabels + ", " + -gapBetweenGroups/2 + ")")
-	      .call(yAxis);
-
-	// Draw legend
-	var legendRectSize = 18,
-	    legendSpacing  = 4;
-
-	var legend = chart.selectAll('.legend')
-	    .data(data.series)
-	    .enter()
-	    .append('g')
-	    .attr('transform', function (d, i) {
-	        var height = legendRectSize + legendSpacing;
-	        var offset = -gapBetweenGroups/2;
-	        var horz = spaceForLabels + chartWidth + 40 - legendRectSize;
-	        var vert = i * height - offset;
-	        return 'translate(' + horz + ',' + vert + ')';
-	    });
-
-	legend.append('rect')
-	    .attr('width', legendRectSize)
-	    .attr('height', legendRectSize)
-	    .style('fill', function (d, i) { return color(i); })
-	    .style('stroke', function (d, i) { return color(i); });
-
-	legend.append('text')
-	    .attr('class', 'legend')
-	    .attr('x', legendRectSize + legendSpacing)
-	    .attr('y', legendRectSize - legendSpacing)
-	    .text(function (d) { return d.label; });
-}
-</script>
 

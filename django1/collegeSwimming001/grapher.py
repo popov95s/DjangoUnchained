@@ -8,20 +8,23 @@ import pprint
 
 baseTimes = [18.38,40.56,90.74,247.30,513.91,859.20,43.85,96.29,49.79,108.12,43.96,98.81,98.88,213.43]
 
-def convertTime(time):
-	if time==None :
-		return 100000
-	else:
-		timeClean= time.time.strip(' ')
-		if ':' in timeClean: 
-			if timeClean.index(':')==1:
-				return float(timeClean[0])*60 + float(timeClean[2:4]) + 0.01*float(timeClean[5:7])
-			if timeClean.index(':')==2:
-				return float(timeClean[0:2])*60 + float(timeClean[3:5]) + 0.01*float(timeClean[6:7])
+def convertTime(times):
+	for event, time in times.items():
+		print time 
+		if ':' in time: 
+			if time.index(':')==1:
+				time = float(time[0])*60 + float(time[2:4]) + 0.01*float(time[5:7])
+			if time.index(':')==2:
+				time= float(time[0:2])*60 + float(time[3:5]) + 0.01*float(time[6:7])
 		else:
-			return float(timeClean[0:timeClean.index('.')]) + 0.01*float(timeClean[timeClean.index('.')+1:5])
+			time =  float(time[0:time.index('.')]) + 0.01*float(time[time.index('.')+1:5])
 
-
+def convertMinutesToSeconds(times):
+	for event,time in times.iteritems():
+		if float(time)/60 < 1 :
+			times[event] =  str(float(time)%60) 
+		else: 
+			times[event] = str(int(float(time)/60)) + ":"+ str(float(time)%60) 
 
 def getPointsAndEvent(timeEntry):
 	return [( timeEntry['eventstroke'] , (str(timeEntry['eventdistance']))+timeEntry['eventcourse']), timeEntry['pointvalue']]
@@ -35,6 +38,12 @@ def getPointsIfExists(event_stroke,event_distance, scores):
 	else :
 		return 0.0
 
+def getTimeIfExists(event_stroke,event_distance, times):
+	if (str(event_stroke),str(event_distance)) in times:
+		return (times[(event_stroke,event_distance)])
+	else :
+		return None
+
 def getTwoBestPoints(scores):
 	return heapq.nlargest(2, scores)
 
@@ -44,6 +53,13 @@ def getDistanceRatio(sprint, mid, distance):
 		return {'sprint': sprint/total, 'mid' : mid/total, 'distance': distance*2/total }
 	else:
 		return None
+
+#clean this !! 
+
+def convertTimeTuples(times):
+	for event, time in times.items():
+		times[str(event[0])+str(event[1])]= time
+		times.pop(event,time)
 
 
 #takes scores in each event and returns a score for Sprint, Distance, Back, Breast,Fly
@@ -66,15 +82,13 @@ def calculateScores(swimmerID):
 	#twoIMTime= convertTime(swimmerTimes.filter(event__stroke='5').filter(event__distance=200).order_by('time').first())	
 	#fourIMTime= convertTime(swimmerTimes.filter(event__stroke='5').filter(event__distance=400).order_by('time').first())
 	#
-	
-	cookie = {'_ga':'GA1.2.1860246398.1464211181', '_cb_ls':'1', '_chartbeat2' : '.1464211187032.1469706656214.0000000000000001', '_cb':'Css_k6CSd27eDbaWFi', 'csrftoken':'v37tNRjFRP6UgTK8fDbXUV8yY0IK9907', 'gender':'M', 'sessionid':'qpnm1x1ifm6tm9naoii7g7r0awff19oy', 'region_id':'division-1', 'collegeteam_id':'75'}
+	cookie = {'_ga':'GA1.2.1860246398.1464211181', '_cb_ls':'1', '_chartbeat2' : '.1464211187032.1470951297630.1000010000000001', '_cb':'Css_k6CSd27eDbaWFi', 'csrftoken':'hytYr7YxmUGB4NoTJAc0hPEFXLfOZHno', 'gender':'M', 'sessionid':'y5b8a6eriai0t9mdlk7x5yb64lnvy695', 'region_id':'division-1', 'collegeteam_id':'75'}
 	r= requests.get('https://www.collegeswimming.com/api/swimmers/'+str(swimmerID)+'/records/',cookies = cookie)
 
 	#print r.json()
 	scr= dict(map(getPointsAndEvent,r.json()))
 
 	times = dict(map(getTimeAndEvent,r.json()))
-	pprint.pprint(scr)
 	#print scr[('1','50Y')]
 	fiftyFreePoints = getPointsIfExists('1','50Y', scr)
 	oneFreePoints = getPointsIfExists('1','100Y', scr)
@@ -115,12 +129,11 @@ def calculateScores(swimmerID):
 	sprintScore = (getTwoBestPoints(sprintEvents)[0]+ getTwoBestPoints(sprintEvents)[1])
 	midScore = (getTwoBestPoints(midEvents)[0]+ getTwoBestPoints(midEvents)[1])
 	distanceScore = (getTwoBestPoints(distanceEvents)[0])
-	print sprintScore, midScore, distanceScore
 	ratio = getDistanceRatio(sprintScore,midScore,distanceScore)
-	print ratio
+
+
 	ratio = ratio['mid']*500 + ratio['distance']*1000
 
-	print ratio
 	freeScore = (getTwoBestPoints(freePoints)[0] + 0.2*getTwoBestPoints(freePoints)[1])/1.2	
 	backScore = (getTwoBestPoints(backPoints)[0] + 0.2*getTwoBestPoints(backPoints)[1])/1.2
 	breastScore = (getTwoBestPoints(breastPoints)[0] + 0.2*getTwoBestPoints(breastPoints)[1])/1.2
@@ -132,14 +145,18 @@ def calculateScores(swimmerID):
 	distanceFreeScore=(milePoints)
 
 
-	scores = {"Free" : round(freeScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), 
-	"IM" : round(IMScore,2),"Distance" : ratio,
-	"sprintFreeScore" : round(sprintFreeScore,2), 'midFreeScore' : midFreeScore, 'distanceFreeScore':distanceFreeScore,
-	'sprintBackScore' : oneBackPoints, 'midBackScore': twoBackPoints, 'sprintBreastScore' : oneBreastPoints,
-	'midBreastScore': twoBreastPoints, 'sprintFlyScore' : oneFlyPoints, 'midFlyScore': twoFlyPoints,
-	'midIMScore' : round(IMScore,2)
-	  } #round(distanceScore,2)}
-	
+	print times 
+	convertMinutesToSeconds(times) 
+	convertTimeTuples(times)
+	print times
+
+
+
+	#have times be only top times per stroke
+
+
+	scores = {	"Free" : round(freeScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), 
+				"IM" : round(IMScore,2),"Distance" : round(ratio,2), 'times' : times} 
 	return scores
 	
 	
