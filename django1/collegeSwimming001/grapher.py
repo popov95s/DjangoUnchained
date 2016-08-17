@@ -168,7 +168,7 @@ def calculateScores(swimmerID):
 
 	#json to return
 	scores = {	"Free" : round(freeScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), 
-				"IM" : round(IMScore,2),"Distance" : round(ratio,2), 'times' : bestTimes} 
+				"IM" : round(IMScore,2),"Distance" : round(ratio,2), 'times' : times} 
 	return scores
 	
 	

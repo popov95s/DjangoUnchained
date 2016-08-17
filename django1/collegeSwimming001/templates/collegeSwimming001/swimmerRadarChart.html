@@ -52,13 +52,56 @@ function drawRadarChart(data){
 			//start at -100 to look better
 			scaleStartValue: -100,
 			scaleEndValue:1100,
-			//customize tooltipTemplate
-			tooltipTemplate: function(valuesObject){
-							 	return getEvents(valuesObject);
-							}
+			////customize tooltipTemplate
+			//tooltipTemplate: function(valuesObject){
+			//				 	return getEvents(valuesObject);
+			//				}
+		//	tooltips: {
+		//	    mode: 'single',
+		//	    callbacks: {
+		//	        afterBody: function(data) {
+		//	        	var multistringText = [];
+		//	            for (event in data.times){
+		//	            	multistringText.push(getOneEvent(valuesObject, event));
+		//	            }
+		//	            
+		//	            return multistringText;
+		//	        }
+		//	    }
+		//	}
+			tooltip: {
+				enabled : true,
+				customizeText: function (e) {
+                	return 'Line1<br/>Line2<br/>Line3' ;
+        		}
+			}
 	});
 
 
+	function getOneEvent(valuesObject, event){
+		tempStr="";
+		if (valuesObject.label=='Free' && event[0]=='1'){ 
+			tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
+		}
+		if (valuesObject.label=='Back' && event[0]=='2'){
+			tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n'; 
+		}
+		if (valuesObject.label=='Breast' && event[0]=='3'){
+			tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n'; 
+		}
+		if (valuesObject.label=='Fly' && event[0]=='4'){
+			tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
+		} 
+		if (valuesObject.label=='IM' && event[0]=='5'){
+			tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
+		} 
+
+		if (tempStr==""){
+			return "No " + valuesObject.label + " results found.";
+		}
+		else return tempStr;
+
+	}
 	//will return a string to be shown in the tooltip(mouseover)
 	function getEvents(valuesObject){
 		tempStr="";
