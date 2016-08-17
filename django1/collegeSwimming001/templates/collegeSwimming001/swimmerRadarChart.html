@@ -1,6 +1,8 @@
-<script src="http://code.jquery.com/jquery-latest.min.js"
-				type="text/javascript"></script>
+<!-- include jquery and scripts-->
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 <script src="http://www.chartjs.org/assets/Chart.js"></script>
+
+<!--radar chart and gradient divs-->
 <div>
 	<canvas id="radarChart" width="400" height="400"></canvas>
 </div>
@@ -8,9 +10,11 @@
 	<canvas id="gradient" width="400" height="30"></canvas>
 </div>
 <div>
-	{{scores}} {{times}}
+	&nbsp;&nbsp;&nbsp;&nbsp;Sprint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Distance
 </div>
 <script>
+//AJAX get to endpoint
 $(document).ready(function(){
 		$.ajax({
 				type: "GET",
@@ -23,9 +27,7 @@ $(document).ready(function(){
 		});
 });
 
-//clean this + add mouseover labels for events
-
-
+//draw radar chart function
 function drawRadarChart(data){
 	//radar chart data
 	var radarData = {
@@ -47,17 +49,17 @@ function drawRadarChart(data){
 			scaleOverride: true,
 			scaleSteps: 10,
 			scaleStepWidth: 120,
+			//start at -100 to look better
 			scaleStartValue: -100,
 			scaleEndValue:1100,
+			//customize tooltipTemplate
 			tooltipTemplate: function(valuesObject){
-							 // console.log(valuesObject);
-							  // do different things here based on whatever you want;
-							  return getEvents(valuesObject);
+							 	return getEvents(valuesObject);
 							}
-			
-			//<%='50 Free' %>:  <%= custom  %>,<%='100 Free' %>:  <%= value  %>"
 	});
 
+
+	//will return a string to be shown in the tooltip(mouseover)
 	function getEvents(valuesObject){
 		tempStr="";
 		for (event in data.times){
@@ -83,9 +85,7 @@ function drawRadarChart(data){
 		}
 		else return tempStr;
 	}
- 
-	
-						
+
 }
 
 
