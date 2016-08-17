@@ -12,7 +12,6 @@ baseTimes = [18.38,40.56,90.74,247.30,513.91,859.20,43.85,96.29,49.79,108.12,43.
 #converts a string time to float 
 def convertTime(times):
 	for event, time in times.items():
-		print time 
 		if ':' in time: 
 			if time.index(':')==1:
 				time = float(time[0])*60 + float(time[2:4]) + 0.01*float(time[5:7])
@@ -81,7 +80,6 @@ def convertTimeTuples(times):
 #get best time by points
 def getTimeByEvent(maxPoints, scores, times):
 	for event in scores:
-		print scores[event]
 		if float(scores[event]) == float(maxPoints):
 			return { str(event[0]+event[1]) : times[str(event[0] + event[1])]}
 	return {}
