@@ -58,28 +58,31 @@ function drawRadarChart(data){
 							}
 	});
 
-
 	//will return a string to be shown in the tooltip(mouseover)
 	function getEvents(valuesObject){
 		tempStr="";
-		for (event in data.times){
-			if (valuesObject.label=='Free' && event[0]=='1'){ 
-				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
-			}
-			if (valuesObject.label=='Back' && event[0]=='2'){
-				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n'; 
-			}
-			if (valuesObject.label=='Breast' && event[0]=='3'){
-				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n'; 
-			}
-			if (valuesObject.label=='Fly' && event[0]=='4'){
-				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
-			} 
-			if (valuesObject.label=='IM' && event[0]=='5'){
-				tempStr+= event.slice(1,event.length) + ' '+ valuesObject.label +' : ' + data.times[event] + '\n';
-			} 
-
+		if (valuesObject.label=='Free'  && Object.keys(data.times[0]).length!=0){ 
+			tempStr+= String(data.times[0]['eventdistance']) + String(data.times[0]['eventcourse']) + ' ' + valuesObject.label 
+				+ " : " +String(data.times[0]['eventtime'])  ;
 		}
+		if (valuesObject.label=='Back' && Object.keys(data.times[1]).length!=0){ 
+			tempStr+= String(data.times[1]['eventdistance']) + String(data.times[1]['eventcourse']) + ' ' + valuesObject.label 
+				+ " : " + String(data.times[1]['eventtime']) ;
+		}
+		if (valuesObject.label=='Breast' && Object.keys(data.times[2]).length!=0){ 
+			tempStr+= String(data.times[2]['eventdistance']) + String(data.times[2]['eventcourse']) + ' ' + valuesObject.label 
+				+  " : " +String(data.times[2]['eventtime']);
+		}
+		if (valuesObject.label=='Fly' && Object.keys(data.times[3]).length!=0){ 
+			tempStr+= String(data.times[3]['eventdistance']) + String(data.times[3]['eventcourse']) + ' ' + valuesObject.label 
+				+ " : " + String(data.times[3]['eventtime']);
+		}
+		if (valuesObject.label=='IM' && Object.keys(data.times[4]).length!=0){ 
+			tempStr+= String(data.times[4]['eventdistance']) + String(data.times[4]['eventcourse']) + ' ' + valuesObject.label 
+				+  " : " + String(data.times[4]['eventtime']);
+		}
+		
+		
 		if (tempStr==""){
 			return "No " + valuesObject.label + " results found.";
 		}

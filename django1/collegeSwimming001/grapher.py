@@ -23,15 +23,14 @@ def convertTime(times):
 
 #converts a time from float to MM:SS.HH format
 def convertMinutesToSeconds(times):
-	for event,time in times.iteritems():
-		if float(time)/60 < 1 :
-			times[event] =  str(float(time)%60) 
+	for time in times:
+		if float(time['eventtime'])/60 < 1 :
+			time['eventtime'] =  str(float(time['eventtime'])%60)
 		else:
-			if (float(time)%60 >10.0): 
-				times[event] = str(int(float(time)/60)) + ":"+ str(float(time)%60) 
-			if (float(time)%60 <10.0): 
-				times[event] = str(int(float(time)/60)) + ":0"+ str(float(time)%60) 
-
+			if (float(time['eventtime'])%60 >10.0): 
+				time['eventtime'] = str(int(float(time['eventtime'])/60)) + ":"+ str(float(time['eventtime'])%60) 
+			elif (float(time['eventtime'])%60 <10.0): 
+				time['eventtime'] = str(int(float(time['eventtime'])/60)) + ":0"+ str(float(time['eventtime'])%60) 
 
 #returns a tuple of event and points for that event
 def getPointsAndEvent(timeEntry):
@@ -40,7 +39,8 @@ def getPointsAndEvent(timeEntry):
 
 #returns a tuple of event and time for that event
 def getTimeAndEvent(timeEntry):
-	return [( timeEntry['eventstroke'] , (str(timeEntry['eventdistance']))+timeEntry['eventcourse']), timeEntry['eventtime']]
+	return {'eventstroke': timeEntry['eventstroke'], 'eventdistance' :timeEntry['eventdistance'], 'eventcourse': timeEntry['eventcourse'], 'meet':timeEntry['meet'], 'eventtime':timeEntry['eventtime'], 'pointvalue':timeEntry['pointvalue'] }
+	#return [( timeEntry['eventstroke'] , (str(timeEntry['eventdistance']))+timeEntry['eventcourse']), (timeEntry['eventtime'], timeEntry['meet'])]
 
 # return points if they exist, else returns 0.0
 def getPointsIfExists(event_stroke,event_distance, scores):
@@ -69,19 +69,15 @@ def getDistanceRatio(sprint, mid, distance):
 	else:
 		return None
 
-#converts an event tuple back to a string
-def convertTimeTuples(times):
-	for event, time in times.items():
-		times[str(event[0])+str(event[1])]= time
-		times.pop(event,time)
 
 
 
 #get best time by points
-def getTimeByEvent(maxPoints, scores, times):
+def getTimeByEvent(maxPoints, scores, times, stroke):
 	for event in scores:
-		if float(scores[event]) == float(maxPoints):
-			return { str(event[0]+event[1]) : times[str(event[0] + event[1])]}
+		for time in times :
+			if time['eventstroke'] == stroke and float(time['pointvalue'])==float(maxPoints):
+				return time
 	return {}
 
 
@@ -95,7 +91,7 @@ def calculateScores(swimmerID):
 	scr= dict(map(getPointsAndEvent,r.json()))
 	
 	#times
-	times = dict(map(getTimeAndEvent,r.json()))
+	times = list(map(getTimeAndEvent,r.json()))
 	
 	#points for each event
 	fiftyFreePoints = getPointsIfExists('1','50Y', scr)
@@ -154,16 +150,15 @@ def calculateScores(swimmerID):
 
 	#convert to ease 
 	convertMinutesToSeconds(times) 
-	convertTimeTuples(times)
 
 	#get best time by stroke
-	bestFreeTime = getTimeByEvent(getTwoBestPoints(freePoints)[0], scr, times)
-	bestBackTime = getTimeByEvent(getTwoBestPoints(backPoints)[0], scr, times)
-	bestBreastTime = getTimeByEvent(getTwoBestPoints(breastPoints)[0], scr, times)
-	bestFlyTime = getTimeByEvent(getTwoBestPoints(flyPoints)[0], scr, times)
-	bestIMTime = getTimeByEvent(getTwoBestPoints(IMPoints)[0], scr, times)
-	bestTimes = dict(bestFreeTime.items() +  bestBackTime.items() +  bestBreastTime.items() + bestFlyTime.items() + bestIMTime.items())
-
+	bestFreeTime = getTimeByEvent(getTwoBestPoints(freePoints)[0], scr, times,'1')
+	bestBackTime = getTimeByEvent(getTwoBestPoints(backPoints)[0], scr, times,'2')
+	bestBreastTime = getTimeByEvent(getTwoBestPoints(breastPoints)[0], scr, times,'3')
+	bestFlyTime = getTimeByEvent(getTwoBestPoints(flyPoints)[0], scr, times,'4')
+	bestIMTime = getTimeByEvent(getTwoBestPoints(IMPoints)[0], scr, times, '5')
+	bestTimes = (bestFreeTime ,  bestBackTime ,  bestBreastTime , bestFlyTime , bestIMTime)
+	
 	#json to return
 	scores = {	"Free" : round(freeScore,2),"Back": round(backScore,2), "Breast" : round(breastScore,2), "Fly" : round(flyScore,2), 
 				"IM" : round(IMScore,2),"Distance" : round(ratio,2), 'times' : bestTimes} 
